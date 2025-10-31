@@ -27,6 +27,10 @@ def get_seed(random_state: Optional[np.random.RandomState] = None) -> int:
 
 
 def stat_array(array: Union[np.ndarray, List[int], 'torch.Tensor']) -> Tuple[Dict[str, float], str]:
+    # Handle HuggingFace datasets Column objects
+    if hasattr(array, '__class__') and array.__class__.__name__ == 'Column':
+        array = np.array([val for val in array])
+
     if isinstance(array, list):
         if array and isinstance(array[0], list):
             array = np.array([sum(sublist) for sublist in array])
